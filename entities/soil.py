@@ -6,6 +6,7 @@ from typing import Tuple, List
 
 from core.settings import *
 from core.utils import import_folder, import_folder_dict
+from entities.player import Player
 
 
 class SoilTile(pygame.sprite.Sprite):
@@ -187,7 +188,9 @@ class SoilLayer:
         is_watered = "W" in cell
         return is_watered
 
-    def plant_seed(self, target_pos: Tuple[int, int], seed: str) -> None:
+    def plant_seed(
+        self, target_pos: Tuple[int, int], seed: str, player: Player
+    ) -> None:
         for soil_sprite in self.soil_sprites.sprites():
             if soil_sprite.rect.collidepoint(target_pos):
                 # self.plant_sound.play()
@@ -203,6 +206,7 @@ class SoilLayer:
                         soil_sprite,
                         self.check_watered,
                     )
+                    player.inventory.update_item(player.inventory.selected, -1)
 
     def update_plants(self) -> None:
         for plant in self.plant_sprites.sprites():
