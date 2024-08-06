@@ -2,9 +2,77 @@ from __future__ import annotations
 
 import os
 import pygame
-from typing import Dict, List, Optional, Callable, Generic, TypeVar
+from dataclasses import dataclass
+from typing import (
+    Dict,
+    List,
+    Tuple,
+    Callable,
+    Sequence,
+    Optional,
+    Generic,
+    TypeVar,
+    Union,
+)
 
 T = TypeVar("T")
+
+
+@dataclass
+class TextStyle:
+    text_colour: Union[int, str, Sequence[int]]
+    text_bg_colour: Optional[Union[int, str, Sequence[int]]] = None
+    bold: bool = False
+    italic: bool = False
+    font_name: Optional[Union[str, bytes]] = None
+
+    def copy(self) -> TextStyle:
+        return TextStyle(
+            text_colour=self.text_colour,
+            text_bg_colour=self.text_bg_colour,
+            bold=self.bold,
+            italic=self.italic,
+            font_name=self.font_name,
+        )
+
+
+class Text:
+    __slots__ = ("window", "center", "text_style", "text_size", "font", "rect")
+
+    def __init__(
+        self,
+        window: pygame.Surface,
+        text_style: TextStyle,
+        text_size: int,
+        center: Tuple[int, int],
+    ) -> None:
+        self.window = window
+        self.center = center
+        self.text_style = text_style
+        self.font = pygame.font.SysFont(
+            self.text_style.font_name,
+            text_size,
+            self.text_style.bold,
+            self.text_style.italic,
+        )
+        self.rect: Optional[pygame.Rect] = None
+
+    def render(
+        self,
+        text: str,
+        colour: Optional[Union[int, str, Sequence[int]]] = None,
+        text_bg_colour: Optional[Union[int, str, Sequence[int]]] = None,
+        antialias: bool = True,
+    ) -> None:
+        rendered_text = self.font.render(
+            text,
+            antialias,
+            colour or self.text_style.text_colour,
+            text_bg_colour or self.text_style.text_bg_colour,
+        )
+        if self.rect is None:
+            self.rect = rendered_text.get_rect(center=self.center)
+        self.window.blit(rendered_text, self.rect)
 
 
 class Animation:
@@ -112,16 +180,20 @@ class ItemIterator(Generic[T]):
 
     def remove(self, element: T) -> None:
         self.seq.remove(element)
-        self.seq = len(self.seq)
         del self.inv[element]
+        self.max_index -= 1
 
     def update_item(self, item: T, amount: int = 1) -> None:
         if item not in self.seq:
             self.append(item)
+            self.max_index += 1
         self.inv[item] += amount
 
     def set_item(self, item: T, value: int) -> None:
         self.inv[item] = value
+        if item not in self.seq:
+            self.append(item)
+            self.max_index += 1
 
 
 def import_folder(path: str) -> List[pygame.Surface]:
