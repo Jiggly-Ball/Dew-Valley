@@ -1,12 +1,24 @@
 import pygame
-from entities.player import Player
+
 from core.settings import Display
+from core.utils import Text
+from core.presets import overlay_style
+from entities.player import Player
 
 
 class Overlay:
     def __init__(self, player: Player, display: pygame.Surface) -> None:
         self.display_surface = display
         self.player = player
+        self.text = Text(
+            self.display_surface,
+            overlay_style,
+            30,
+            (
+                Display.SCREEN_RESOLUTION[0] / 1.2,
+                Display.SCREEN_RESOLUTION[1] / 1.17,
+            ),
+        )
 
         overlay_path = "graphics/images/overlay"
         fruit_path = "graphics/images/fruit"
@@ -25,5 +37,8 @@ class Overlay:
                 Display.SCREEN_RESOLUTION[0] / 1.2,
                 Display.SCREEN_RESOLUTION[1] / 1.3,
             )
+        )
+        self.text.render(
+            f"x{self.player.inventory.inv[self.player.inventory.selected]}"
         )
         self.display_surface.blit(tool_surf, tool_rect)
