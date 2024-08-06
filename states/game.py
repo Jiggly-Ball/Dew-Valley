@@ -138,20 +138,22 @@ class Game(State):
                 LAYERS["water"],
             )
 
-
     def plant_collision(self) -> None:
         if self.soil_layer.plant_sprites:
             for plant in self.soil_layer.plant_sprites.sprites():
                 if plant.harvestable and plant.rect.colliderect(self.player.hitbox):
-                    self.player.inventory.append(plant.plant_type)
+                    self.player.inventory.update_item(plant.plant_type, 2)
                     plant.kill()
-                    Particle(plant.rect.topleft, plant.image,
-                             self.all_sprites, z=LAYERS['main'])
+                    Particle(
+                        plant.rect.topleft,
+                        plant.image,
+                        self.all_sprites,
+                        z=LAYERS["main"],
+                    )
 
                     x = plant.rect.centerx // TILE_SIZE
                     y = plant.rect.centery // TILE_SIZE
-                    self.soil_layer.grid[y][x].remove('P')
-
+                    self.soil_layer.grid[y][x].remove("P")
 
     def reset(self) -> None:
         self.soil_layer.update_plants()
