@@ -4,7 +4,7 @@ from pygame.sprite import Group
 from typing import Tuple, Dict
 
 from core.utils import Animation, Timer, ItemIterator
-from core.settings import Display, LAYERS, PLAYER_TOOL_OFFSET
+from core.settings import Display, LAYERS, PLAYER_TOOL_OFFSET, TILE_SIZE
 from entities.sprites import BaseSprite
 
 
@@ -67,13 +67,13 @@ class Player(BaseSprite):
 
     def use_seed(self):
         print("plant check")
-        if (
-            self.inventory.inv[self.inventory.selected] > 0
-            and self.get_target_pos() in self.soil_layer.soil_coords
-        ):
+
+        if self.inventory.inv[self.inventory.selected] > 0:
             print("PLANT EXECUTE")
-            self.soil_layer.plant_seed(self.get_target_pos(), self.inventory.selected)
-            self.inventory.update_item(self.inventory.selected, -1)
+            self.soil_layer.plant_seed(
+                self.get_target_pos(), self.inventory.selected, self
+            )
+            # self.inventory.update_item(self.inventory.selected, -1)
 
     def interact(self) -> None:
         interacted = False
