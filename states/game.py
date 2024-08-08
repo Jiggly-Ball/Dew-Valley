@@ -154,7 +154,7 @@ class Game(State):
         if self.soil_layer.plant_sprites:
             for plant in self.soil_layer.plant_sprites.sprites():
                 if plant.harvestable and plant.rect.colliderect(self.player.hitbox):
-                    self.player.inventory.update_item(plant.plant_type, 2)
+                    self.player.inventory.update_item(2, plant.plant_type)
                     plant.kill()
                     Particle(
                         plant.rect.topleft,
