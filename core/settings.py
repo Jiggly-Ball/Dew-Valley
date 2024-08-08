@@ -17,7 +17,9 @@ class Display:
 
 
 TILE_SIZE: int = 64
+
 BACKGROUND_COLOUR: ColourType = "black"
+
 LAYERS: Dict[str, int] = {
     "water": 0,
     "ground": 1,
@@ -31,16 +33,30 @@ LAYERS: Dict[str, int] = {
     "fruit": 9,
     "rain_drops": 10,
 }
+
 PLAYER_TOOL_OFFSET: Dict[str, Vector2] = {
     "left": Vector2(-50, 40),
     "right": Vector2(50, 40),
     "up": Vector2(0, -10),
     "down": Vector2(0, 50),
 }
+
 APPLE_POS: Dict[str, Tuple[Tuple[int, int], ...]] = {
     "Small": ((18, 17), (30, 37), (12, 50), (30, 45), (20, 30), (30, 10)),
     "Large": ((30, 24), (50, 65), (50, 50), (16, 40), (45, 50), (42, 70)),
 }
+
 GROW_SPEED = {"corn": 1, "tomato": 0.7}
+
+SALE_PRICES = {
+    "wood": 4,
+    "apple": 2,
+    "corn": 10,
+    "tomato": 20,
+}
+
+PURCHASE_PRICES = {"corn": 4, "tomato": 5}
 CHARACTER_ANIMATIONS: str = "graphics/images/character"
 WATER_ANIMATIONS: str = "graphics/images/water"
+COIN_ANIMATIONS: str = "graphics/images/coin"
+BG_COLOUR: Tuple[int, int, int] = (200, 200, 200)
