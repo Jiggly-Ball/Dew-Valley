@@ -7,16 +7,17 @@ from entities.sprites import BaseSprite
 
 
 class Sky:
-    def __init__(self) -> None:
-        self.display_surface = pygame.display.get_surface()
+    def __init__(self, display: pygame.Surface) -> None:
+        self.display_surface = display
         self.full_surf = pygame.Surface(Display.SCREEN_RESOLUTION)
         self.start_color = [255, 255, 255]
         self.end_color = (38, 101, 189)
+        self.day_speed = 1.2
 
     def display(self, dt: int) -> None:
         for index, value in enumerate(self.end_color):
             if self.start_color[index] > value:
-                self.start_color[index] -= 2 * dt
+                self.start_color[index] -= self.day_speed * dt
 
         self.full_surf.fill(self.start_color)
         self.display_surface.blit(
@@ -25,7 +26,14 @@ class Sky:
 
 
 class Drop(BaseSprite):
-    def __init__(self, surf, pos, moving, groups, z) -> None:
+    def __init__(
+        self,
+        surf: pygame.Surface,
+        pos: Tuple[int, int],
+        moving: bool,
+        groups: Union[pygame.sprite.Group, Sequence[pygame.sprite.Group]],
+        z: int,
+    ) -> None:
         # general setup
         super().__init__(pos, surf, groups, z)
         self.lifetime = random.randint(400, 500)
@@ -50,7 +58,7 @@ class Drop(BaseSprite):
 
 
 class Rain:
-    def __init__(self, all_sprites) -> None:
+    def __init__(self, all_sprites: pygame.sprite.Group) -> None:
         self.all_sprites = all_sprites
         self.rain_drops = import_folder("graphics/images/rain/drops")
         self.rain_floor = import_folder("graphics/images/rain/floor")
