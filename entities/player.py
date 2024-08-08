@@ -36,7 +36,9 @@ class Player(BaseSprite):
         self.direction = pygame.math.Vector2()
         self.direction_str = "down"
 
-        self.inventory = ItemIterator(["hoe", "axe", "water", "corn", "tomato"])
+        self.inventory = ItemIterator(
+            ["hoe", "axe", "water", "corn", "tomato", "wood", "apple"]
+        )
         self.inventory.set_item("corn", 5)
         self.inventory.set_item("tomato", 5)
         self.money = 300
@@ -73,7 +75,6 @@ class Player(BaseSprite):
             self.soil_layer.plant_seed(
                 self.get_target_pos(), self.inventory.selected, self
             )
-            # self.inventory.update_item(self.inventory.selected, -1)
 
     def interact(self) -> None:
         interacted = False
