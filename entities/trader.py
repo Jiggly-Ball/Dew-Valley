@@ -19,10 +19,8 @@ class Trader:
         self.padding = 8
 
         # entries
-        self.options = list(self.player.inventory.inv.keys())  # + list(
-        #    self.player.seed_inventory.keys()
-        # )
-        self.sell_border = len(self.player.inventory.inv) - 1
+        self.options = ["wood", "apple", "corn", "tomato", "corn", "tomato"]
+        self.sell_border = 3
         self.setup()
 
         # movement
@@ -76,14 +74,14 @@ class Trader:
 
                 # sell
                 if self.index <= self.sell_border:
-                    if self.player.inventory.inv[self.player.inventory.selected] > 0:
-                        self.player.inventory.update_item(-1)
+                    if self.player.inventory.inv[current_item] > 0:
+                        self.player.inventory.update_item(-1, current_item)
                         self.player.money += SALE_PRICES[current_item]
                 # buy
                 else:
                     seed_price = PURCHASE_PRICES[current_item]
                     if self.player.money >= seed_price:
-                        self.player.seed_inventory[current_item] += 1
+                        self.player.inventory.update_item(1, current_item)
                         self.player.money -= PURCHASE_PRICES[current_item]
 
         if self.index < 0:
@@ -137,8 +135,7 @@ class Trader:
             top = self.main_rect.top + text_index * (
                 text_surf.get_height() + (self.padding * 2) + self.space
             )
-            amount_list = list(self.player.inventory.inv.values())  # + list(
-            #    self.player.seed_inventory.values()
-            # )
+
+            amount_list = [self.player.inventory.inv[i] for i in self.options]
             amount = amount_list[text_index]
             self.show_entry(text_surf, amount, top, self.index == text_index)
