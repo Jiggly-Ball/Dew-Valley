@@ -76,9 +76,10 @@ class Water(BaseSprite):
     def __init__(self, pos: Tuple[int, int], group: GroupParam, z: int) -> None:
 
         self.animation = Animation(
-            {"water": [image for image in import_folder(WATER_ANIMATIONS)]}, sprite=self
+            {"water": [image for image in import_folder(WATER_ANIMATIONS)]},
+            start_status="water",
+            sprite=self,
         )
-        self.animation.set_status("water")
         super().__init__(pos, self.animation.get_frame(0), group, z)
 
     def update(self, dt: int) -> None:
