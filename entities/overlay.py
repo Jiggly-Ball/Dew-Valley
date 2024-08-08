@@ -1,7 +1,7 @@
 import pygame
 
 from core.settings import Display, COIN_ANIMATIONS, BG_COLOUR
-from core.utils import Animation, import_folder, get_path
+from core.utils import Animation, import_folder, import_folder_dict, get_path
 from entities.player import Player
 
 
@@ -20,12 +20,10 @@ class Overlay:
             speed=10,
         )
 
-        overlay_path = "graphics/images/overlay"
-        fruit_path = "graphics/images/fruit"
-        self.tools_surf = {
-            tool: pygame.image.load(f"{overlay_path}/{tool}.png").convert_alpha()
-            for tool in player.inventory.seq
-        }
+        overlay_path = get_path("../graphics/images/overlay/")
+        fruit_path = get_path("../graphics/images/fruit")
+
+        self.tools_surf = import_folder_dict(get_path(overlay_path))
         self.tools_surf["apple"] = pygame.image.load(
             f"{fruit_path}/apple.png"
         ).convert_alpha()
