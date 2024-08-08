@@ -11,13 +11,14 @@ from core.settings import (
     TILE_SIZE,
     CHARACTER_ANIMATIONS,
 )
-from core.utils import Animation, import_folder
+from core.utils import Animation, import_folder, get_path
 from entities.player import Player, CameraGroup
 from entities.overlay import Overlay
 from entities.sprites import BaseSprite, Particle, Interaction, Water, Wildflower, Tree
 from entities.transition import Transition
 from entities.soil import SoilLayer
-from entities.sky import Rain
+from entities.sky import Rain, Sky
+from entities.trader import Trader
 
 
 class Game(State):
@@ -29,6 +30,7 @@ class Game(State):
         self.tree_sprites = pygame.sprite.Group()
         self.interaction_sprites = pygame.sprite.Group()
 
+        self.sky = Sky(State.window)
         self.rain = Rain(self.all_sprites)
         self.raining = random.randint(0, 10) > 7
         self.soil_layer = SoilLayer(
@@ -51,10 +53,11 @@ class Game(State):
             self.interaction_sprites,
             self.soil_layer,
         )
+        self.trader = Trader(self.player)
 
         self.transition = Transition(self.reset, self.player, State.window)
         self.overlay = Overlay(self.player, State.window)  # type: ignore
-        self.tmx_data = load_pygame("graphics/data/map.tmx")
+        self.tmx_data = load_pygame(get_path("../graphics/data/map.tmx"))
 
     def setup(self) -> None:
         # World Map
@@ -71,6 +74,15 @@ class Game(State):
                 self.player.position.y = obj.y
 
             elif obj.name == "Bed":
+                Interaction(
+                    (obj.x, obj.y),
+                    (obj.width, obj.height),
+                    self.interaction_sprites,
+                    LAYERS["main"],
+                    obj.name,
+                )
+
+            elif obj.name == "Trader":
                 Interaction(
                     (obj.x, obj.y),
                     (obj.width, obj.height),
@@ -171,6 +183,8 @@ class Game(State):
                 apple.kill()
             tree.create_apple()
 
+        self.sky.start_color = [255, 255, 255]
+
     def run(self) -> None:
         while True:
             dt = self.clock.tick(Display.FPS) / 1000
@@ -180,15 +194,19 @@ class Game(State):
                 if event.type == pygame.QUIT:
                     self.manager.exit_game()
 
-            self.all_sprites.update(dt)
             self.all_sprites.draw(self.player)
-            self.plant_collision()
-            self.overlay.draw()
+            self.overlay.draw(dt=dt)
+            self.sky.display(dt=dt)
 
-            if self.raining:
-                self.rain.update()
+            if self.player.toggle_active:
+                self.trader.update()
+            else:
+                self.all_sprites.update(dt)
+                self.plant_collision()
+                if self.raining:
+                    self.rain.update()
 
-            if self.player.sleep:
-                self.transition.run()
+                if self.player.sleep:
+                    self.transition.run()
 
             pygame.display.update()
