@@ -206,7 +206,7 @@ class SoilLayer:
                         soil_sprite,
                         self.check_watered,
                     )
-                    player.inventory.update_item(player.inventory.selected, -1)
+                    player.inventory.update_item(-1)
 
     def update_plants(self) -> None:
         for plant in self.plant_sprites.sprites():
