@@ -49,12 +49,17 @@ class Text:
         self.window = window
         self.center = center
         self.text_style = text_style
-        self.font = pygame.font.SysFont(
-            self.text_style.font_name,
-            text_size,
-            self.text_style.bold,
-            self.text_style.italic,
-        )
+
+        if self.text_style.font_name:
+            self.font = pygame.font.Font(self.text_style.font_name, text_size)
+        else:
+            self.font = pygame.font.SysFont(
+                self.text_style.font_name,
+                text_size,
+                self.text_style.bold,
+                self.text_style.italic,
+            )
+
         self.rect: Optional[pygame.Rect] = None
 
     def render(
@@ -80,6 +85,7 @@ class Animation:
         self,
         frames: Dict[str, List[pygame.Surface]],
         *,
+        start_status: Optional[str] = None,
         sprite: Optional[pygame.sprite.Sprite] = None,
         speed: int = 4,
         ignore_invalid_state: bool = True,
@@ -90,9 +96,10 @@ class Animation:
         self.ignore_invalid_state = ignore_invalid_state
 
         self.status: Optional[str] = None
-        # self.last_status: Optional[str] = None
         self.current_frame = 0
         self.max_frames = 0
+        if start_status is not None:
+            self.set_status(start_status)
 
     def get_frame(self, frame: int) -> pygame.Surface:
         return self.frames[self.status][frame]
@@ -118,6 +125,7 @@ class Animation:
         self.current_frame += self.speed * dt
         if self.current_frame > self.max_frames:
             self.current_frame = 0
+
         return self.frames[self.status][round(self.current_frame)]
 
     def play_status_ip(self, dt: int) -> None:
@@ -183,7 +191,8 @@ class ItemIterator(Generic[T]):
         del self.inv[element]
         self.max_index -= 1
 
-    def update_item(self, item: T, amount: int = 1) -> None:
+    def update_item(self, amount: int = 1, item: Optional[T] = None) -> None:
+        item = item or self.selected
         if item not in self.seq:
             self.append(item)
             self.max_index += 1
@@ -216,3 +225,8 @@ def import_folder_dict(path: str) -> dict:
             surface_dict[image.split(".")[0]] = image_surf
 
     return surface_dict
+
+
+def get_path(path: str) -> str:
+    absolute_path = os.path.dirname(__file__)
+    return os.path.join(absolute_path, path)
