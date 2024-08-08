@@ -4,7 +4,7 @@ from pygame.sprite import Group
 from typing import Tuple, Dict
 
 from core.utils import Animation, Timer, ItemIterator
-from core.settings import Display, LAYERS, PLAYER_TOOL_OFFSET, TILE_SIZE
+from core.settings import Display, LAYERS, PLAYER_TOOL_OFFSET
 from entities.sprites import BaseSprite
 
 
@@ -39,6 +39,9 @@ class Player(BaseSprite):
         self.inventory = ItemIterator(["hoe", "axe", "water", "corn", "tomato"])
         self.inventory.set_item("corn", 5)
         self.inventory.set_item("tomato", 5)
+        self.money = 300
+
+        self.toggle_active = False
         self.timers: Dict[str, Timer] = {
             "interact": Timer(50, self.interact),
             "tool_use": Timer(500, self.use_tool),
@@ -66,10 +69,7 @@ class Player(BaseSprite):
             self.direction = pygame.math.Vector2()
 
     def use_seed(self):
-        print("plant check")
-
         if self.inventory.inv[self.inventory.selected] > 0:
-            print("PLANT EXECUTE")
             self.soil_layer.plant_seed(
                 self.get_target_pos(), self.inventory.selected, self
             )
@@ -92,7 +92,7 @@ class Player(BaseSprite):
             )
             if collided_interaction_sprite:
                 if collided_interaction_sprite[0].name == "Trader":
-                    self.toggle_shop()
+                    self.toggle_active = not self.toggle_active
 
                 elif collided_interaction_sprite[0].name == "Bed":
                     self.direction_str = "left"
