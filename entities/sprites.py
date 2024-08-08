@@ -66,7 +66,7 @@ class Particle(BaseSprite):
         new_surf.set_colorkey((0, 0, 0))
         self.image = new_surf
 
-    def update(self, *args):
+    def update(self, *args) -> None:
         current_time = pygame.time.get_ticks()
         if current_time - self.start_time > self.duration:
             self.kill()
@@ -150,11 +150,11 @@ class Tree(BaseSprite):
         if self.health == 0:
             self.image = self.stump_surf
             self.rect = self.image.get_rect(midbottom=self.rect.midbottom)
-            self.hitbox = self.rect.copy().inflate(-10, -self.rect.height * 0.6)
+            self.hitbox = self.rect.copy().inflate(-10, -self.rect.height * 0.95)
             for apple in self.apple_sprites:
                 apple.kill()
-                self.player.inventory.update_item("apple")
-            self.player.inventory.update_item("wood")
+                self.player.inventory.update_item(item="apple")
+            self.player.inventory.update_item(item="wood")
             Particle(
                 self.rect.topleft, self.image, self.all_sprites, LAYERS["fruit"], 300
             )
@@ -168,5 +168,5 @@ class Tree(BaseSprite):
                 groups=self.all_sprites,
                 z=LAYERS["fruit"],
             )
-            self.player.inventory.update_item("apple")
+            self.player.inventory.update_item(item="apple")
             random_apple.kill()
