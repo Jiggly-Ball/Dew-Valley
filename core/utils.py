@@ -195,14 +195,12 @@ class ItemIterator(Generic[T]):
         item = item or self.selected
         if item not in self.seq:
             self.append(item)
-            self.max_index += 1
         self.inv[item] += amount
 
     def set_item(self, item: T, value: int) -> None:
         self.inv[item] = value
         if item not in self.seq:
             self.append(item)
-            self.max_index += 1
 
 
 def import_folder(path: str) -> List[pygame.Surface]:
