@@ -5,7 +5,7 @@ from pytmx.util_pygame import load_pygame
 from typing import Tuple, List
 
 from core.settings import *
-from core.utils import import_folder, import_folder_dict
+from core.utils import import_folder, import_folder_dict, get_path
 from entities.player import Player
 
 
@@ -102,13 +102,13 @@ class SoilLayer:
         self.soil_coords: List[Vector2] = []
 
         # sounds
-        # hoe_sound_path = "../audio/hoe.wav"
-        # self.hoe_sound = pygame.mixer.Sound(hoe_sound_path)
-        # self.hoe_sound.set_volume(0.1)
+        hoe_sound_path = get_path("../audio/hoe.wav")
+        self.hoe_sound = pygame.mixer.Sound(hoe_sound_path)
+        self.hoe_sound.set_volume(0.1)
 
-        # plant_sound_path = get_path("../audio/plant.wav")
-        # self.plant_sound = pygame.mixer.Sound(plant_sound_path)
-        # self.plant_sound.set_volume(0.2)
+        plant_sound_path = get_path("../audio/plant.wav")
+        self.plant_sound = pygame.mixer.Sound(plant_sound_path)
+        self.plant_sound.set_volume(0.2)
 
     def create_soil_grid(self) -> None:
         ground_path = "graphics/images/world/ground.png"
@@ -136,7 +136,7 @@ class SoilLayer:
     def get_hit(self, point: Vector2) -> None:
         for rect in self.hit_rects:
             if rect.collidepoint(point):
-                # self.hoe_sound.play()
+                self.hoe_sound.play()
 
                 x = rect.x // TILE_SIZE
                 y = rect.y // TILE_SIZE
@@ -193,7 +193,7 @@ class SoilLayer:
     ) -> None:
         for soil_sprite in self.soil_sprites.sprites():
             if soil_sprite.rect.collidepoint(target_pos):
-                # self.plant_sound.play()
+                self.plant_sound.play()
 
                 x = soil_sprite.rect.x // TILE_SIZE
                 y = soil_sprite.rect.y // TILE_SIZE
