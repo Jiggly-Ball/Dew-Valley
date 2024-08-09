@@ -5,8 +5,7 @@ import pygame
 from pygame import QUIT, KEYDOWN, MOUSEBUTTONDOWN
 from pygame.locals import DOUBLEBUF, FULLSCREEN
 
-from states import GAME_STATES
-from core import StateManager
+from core import StateManager, get_state_paths
 from core.settings import Display
 from core.errors import ExitGameError, ExitStateError
 
@@ -24,10 +23,15 @@ class Main:
     def __init__(self) -> None:
         self.screen = pygame.display.set_mode(Display.SCREEN_RESOLUTION, DOUBLEBUF)
         self.screen.set_alpha(None)
-        self.state_manager = StateManager(self.screen, *GAME_STATES)
+        self.state_manager = StateManager(self.screen)
+
+        state_paths = get_state_paths("states/")
+        for state_path in state_paths:
+            self.state_manager.connect_state_hook(state_path)
 
     def run(self) -> None:
         self.state_manager.change_state("Game")
+
         while True:
             try:
                 self.state_manager.run_state()
