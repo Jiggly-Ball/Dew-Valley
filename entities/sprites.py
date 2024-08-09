@@ -4,7 +4,7 @@ import random
 from typing import Tuple, Union, Sequence, TypeAlias, Literal, TYPE_CHECKING
 
 from core.settings import WATER_ANIMATIONS, APPLE_POS, LAYERS
-from core.utils import Animation, Timer, import_folder
+from core.utils import Animation, Timer, import_folder, get_path
 
 if TYPE_CHECKING:
     from entities.player import Player
@@ -128,6 +128,13 @@ class Tree(BaseSprite):
             f"graphics/images/stumps/{name.lower()}.png"
         ).convert_alpha()
 
+        axe_sound_path = get_path("../audio/axe.mp3")
+        self.axe_sound = pygame.mixer.Sound(axe_sound_path)
+
+        interact_sound_path = get_path("../audio/interact.wav")
+        self.interact_sound = pygame.mixer.Sound(interact_sound_path)
+        self.interact_sound.set_volume(0.2)
+
         self.create_apple()
 
     def create_apple(self) -> None:
@@ -146,8 +153,11 @@ class Tree(BaseSprite):
                 break
 
     def damage(self) -> None:
+        self.axe_sound.play()
+
         self.health -= 1
         if self.health == 0:
+            self.interact_sound.play()
             self.image = self.stump_surf
             self.rect = self.image.get_rect(midbottom=self.rect.midbottom)
             self.hitbox = self.rect.copy().inflate(-10, -self.rect.height * 0.95)
@@ -161,6 +171,7 @@ class Tree(BaseSprite):
 
     def interact(self) -> None:
         if len(self.apple_sprites.sprites()) > 0:
+            self.interact_sound.play()
             random_apple = random.choice(self.apple_sprites.sprites())
             Particle(
                 pos=random_apple.rect.topleft,
