@@ -3,7 +3,7 @@ import pygame
 from pygame.sprite import Group
 from typing import Tuple, Dict
 
-from core.utils import Animation, Timer, ItemIterator
+from core.utils import Animation, Timer, ItemIterator, get_path
 from core.settings import Display, LAYERS, PLAYER_TOOL_OFFSET
 from entities.sprites import BaseSprite
 
@@ -41,15 +41,19 @@ class Player(BaseSprite):
         )
         self.inventory.set_item("corn", 5)
         self.inventory.set_item("tomato", 5)
-        self.money = 300
+        self.money = 50
 
         self.toggle_active = False
         self.timers: Dict[str, Timer] = {
             "interact": Timer(50, self.interact),
             "tool_use": Timer(500, self.use_tool),
             "tool_switch": Timer(200),
-            "seed_use": Timer(200, self.use_seed),
+            "seed_use": Timer(50, self.use_seed),
         }
+
+        watering_sound_path = get_path("../audio/water.mp3")
+        self.watering = pygame.mixer.Sound(watering_sound_path)
+        self.watering.set_volume(0.2)
 
     def get_target_pos(self) -> pygame.Vector2:
         return self.rect.center + PLAYER_TOOL_OFFSET[self.direction_str]
@@ -64,6 +68,7 @@ class Player(BaseSprite):
                     tree.damage()
 
         elif self.inventory.selected == "water":
+            self.watering.play()
             self.soil_layer.water(self.get_target_pos())
 
         elif self.inventory.selected in ("corn", "tomato"):
