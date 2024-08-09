@@ -55,7 +55,7 @@ SALE_PRICES = {
     "tomato": 6,
 }
 
-PURCHASE_PRICES = {"corn": 4, "tomato": 5}
+PURCHASE_PRICES = {"corn": 6, "tomato": 7}
 CHARACTER_ANIMATIONS: str = "graphics/images/character"
 WATER_ANIMATIONS: str = "graphics/images/water"
 COIN_ANIMATIONS: str = "graphics/images/coin"
