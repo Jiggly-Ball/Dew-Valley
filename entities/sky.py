@@ -58,7 +58,10 @@ class Drop(BaseSprite):
 
 
 class Rain:
-    def __init__(self, all_sprites: pygame.sprite.Group) -> None:
+    def __init__(
+        self, display: pygame.Surface, all_sprites: pygame.sprite.Group
+    ) -> None:
+        self.display_window = display
         self.all_sprites = all_sprites
         self.rain_drops = import_folder("graphics/images/rain/drops")
         self.rain_floor = import_folder("graphics/images/rain/floor")
@@ -84,6 +87,10 @@ class Rain:
             z=LAYERS["rain_drops"],
         )
 
+    def dim_screen(self) -> None:
+        self.display_window.fill((200, 200, 200), special_flags=pygame.BLEND_RGBA_MULT)
+
     def update(self) -> None:
+        self.dim_screen()
         self.create_floor()
         self.create_drops()
