@@ -61,10 +61,14 @@ class Trader:
             if keys[pygame.K_UP] or keys[pygame.K_w]:
                 self.timer.activate()
                 self.index -= 1
+                if self.index < 0:
+                    self.index = len(self.options) - 1
 
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:
                 self.timer.activate()
                 self.index += 1
+                if self.index > len(self.options) - 1:
+                    self.index = 0
 
             if keys[pygame.K_f]:
                 self.timer.activate()
@@ -108,6 +112,7 @@ class Trader:
         self.display_surface.blit(text_surf, text_rect)
 
         # amount
+        # if self.index > self.sell_border:
         amount_surf = self.font.render(str(amount), False, "Black")
         amount_rect = amount_surf.get_rect(
             midright=(self.main_rect.right - 20, bg_rect.centery)
@@ -138,4 +143,6 @@ class Trader:
 
             amount_list = [self.player.inventory.inv[i] for i in self.options]
             amount = amount_list[text_index]
+            if text_index > self.sell_border:
+                amount = ""
             self.show_entry(text_surf, amount, top, self.index == text_index)
