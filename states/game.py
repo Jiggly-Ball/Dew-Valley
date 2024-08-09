@@ -1,6 +1,7 @@
 import os
 import pygame
 import random
+
 from pytmx.util_pygame import load_pygame
 
 from core import State
@@ -31,8 +32,8 @@ class Game(State):
         self.interaction_sprites = pygame.sprite.Group()
 
         self.sky = Sky(State.window)
-        self.rain = Rain(self.all_sprites)
-        self.raining = random.randint(0, 10) > 7
+        self.rain = Rain(State.window, self.all_sprites)  # type: ignore
+        self.raining = True  # random.randint(0, 10) > 7
         self.soil_layer = SoilLayer(
             self.all_sprites, self.collision_sprites, self.raining
         )
@@ -58,6 +59,20 @@ class Game(State):
         self.transition = Transition(self.reset, self.player, State.window)
         self.overlay = Overlay(self.player, State.window)  # type: ignore
         self.tmx_data = load_pygame(get_path("../graphics/data/map.tmx"))
+
+        music_path = get_path("../audio/bg_music.mp3")
+        self.music = pygame.mixer.Sound(music_path)
+        self.music.set_volume(0.5)
+        self.music.play(loops=-1)
+
+        interact_sound_path = get_path("../audio/interact.wav")
+        self.interact_sound = pygame.mixer.Sound(interact_sound_path)
+        self.interact_sound.set_volume(0.2)
+
+        rain_path = get_path("../audio/rain.wav")
+        self.rain_sound = pygame.mixer.Sound(rain_path)
+        self.rain_sound.set_volume(0.2)
+        self.rain_playing = False
 
     def setup(self) -> None:
         # World Map
@@ -154,6 +169,7 @@ class Game(State):
         if self.soil_layer.plant_sprites:
             for plant in self.soil_layer.plant_sprites.sprites():
                 if plant.harvestable and plant.rect.colliderect(self.player.hitbox):
+                    self.interact_sound.play()
                     self.player.inventory.update_item(2, plant.plant_type)
                     plant.kill()
                     Particle(
@@ -199,14 +215,27 @@ class Game(State):
             self.sky.display(dt=dt)
 
             if self.player.toggle_active:
+                if self.raining:
+                    self.rain.dim_screen()
                 self.trader.update()
             else:
                 self.all_sprites.update(dt)
                 self.plant_collision()
+
                 if self.raining:
+                    if not self.rain_playing:
+                        self.rain_playing = True
+                        self.rain_sound.play(-1)
                     self.rain.update()
+                else:
+                    self.rain_playing = False
+                    self.rain_sound.stop()
 
                 if self.player.sleep:
                     self.transition.run()
 
             pygame.display.update()
+
+
+def hook(**kwargs) -> None:
+    Game.manager.load_states(Game, **kwargs)
