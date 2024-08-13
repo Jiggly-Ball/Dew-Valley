@@ -3,9 +3,10 @@ __version__ = "1.0"
 import pygame
 
 from pygame import QUIT, KEYDOWN, MOUSEBUTTONDOWN
-from pygame.locals import DOUBLEBUF, FULLSCREEN
+from pygame.locals import DOUBLEBUF
 
-from core import StateManager, get_state_paths
+from states import GAME_STATES
+from core import StateManager
 from core.settings import Display
 from core.errors import ExitGameError, ExitStateError
 
@@ -24,10 +25,12 @@ class Main:
         self.screen = pygame.display.set_mode(Display.SCREEN_RESOLUTION, DOUBLEBUF)
         self.screen.set_alpha(None)
         self.state_manager = StateManager(self.screen)
+        self.state_manager.load_states(*GAME_STATES)
 
-        state_paths = get_state_paths("states/")
-        for state_path in state_paths:
-            self.state_manager.connect_state_hook(state_path)
+        # This doesn't work when converting to exe using nuitka-
+        # state_paths = get_paths("states/")
+        # for state_path in state_paths:
+        #    self.state_manager.connect_state_hook(state_path)
 
     def run(self) -> None:
         self.state_manager.change_state("Game")
