@@ -33,7 +33,7 @@ class Game(State):
 
         self.sky = Sky(State.window)
         self.rain = Rain(State.window, self.all_sprites)  # type: ignore
-        self.raining = True  # random.randint(0, 10) > 7
+        self.raining = random.randint(0, 10) > 7
         self.soil_layer = SoilLayer(
             self.all_sprites, self.collision_sprites, self.raining
         )
