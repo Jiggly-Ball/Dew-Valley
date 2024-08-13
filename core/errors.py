@@ -3,12 +3,11 @@ from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from core import State
 else:
-
-    class State: ...
+    State = object()
 
 
 class BaseError(Exception):
-    """The base class to all errors in Snake Game."""
+    """The base class to all custom errors."""
 
     def __init__(self, *args, last_state: Optional[State] = None, **kwargs) -> None:
         super().__init__(*args)
