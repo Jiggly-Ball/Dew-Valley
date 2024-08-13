@@ -154,7 +154,7 @@ class StateManager:
             )
 
         elif (
-            not force
+            not force 
             and self.__current_state is not None
             and state_name == self.__current_state.__name__
         ):
