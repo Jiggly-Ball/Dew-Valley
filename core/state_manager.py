@@ -103,7 +103,7 @@ class StateManager:
         """
 
         for state in states:
-            if not force or state.__name__ in self.__states:
+            if not force and state.__name__ in self.__states:
                 raise StateLoadError(
                     f"State: {state.__name__} has already been loaded.",
                     last_state=self.__last_state,
@@ -155,7 +155,7 @@ class StateManager:
 
         elif (
             not force
-            or self.__current_state is not None
+            and self.__current_state is not None
             and state_name == self.__current_state.__name__
         ):
             raise StateError(
