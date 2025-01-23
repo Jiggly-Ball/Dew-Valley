@@ -5,10 +5,11 @@ import pygame
 from pygame import QUIT, KEYDOWN, MOUSEBUTTONDOWN
 from pygame.locals import DOUBLEBUF
 
-from states import GAME_STATES
-from core import StateManager
+from game_state import StateManager
+from game_state.errors import ExitGameError, ExitStateError
+
 from core.settings import Display
-from core.errors import ExitGameError, ExitStateError
+from states import GAME_STATES
 
 
 # icon = pygame.image.load("assets/icon.ico")

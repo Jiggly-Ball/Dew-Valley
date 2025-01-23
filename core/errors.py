@@ -1,9 +1,9 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Optional
 
 if TYPE_CHECKING:
-    from core import State
-else:
-    State = object()
+    from game_state import State
 
 
 class BaseError(Exception):
