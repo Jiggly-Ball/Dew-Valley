@@ -3,11 +3,11 @@ from __future__ import annotations
 import os
 import pygame
 from dataclasses import dataclass
+from collections.abc import Callable
 from typing import (
     Dict,
     List,
     Tuple,
-    Callable,
     Sequence,
     Optional,
     Generic,

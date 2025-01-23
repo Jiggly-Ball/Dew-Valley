@@ -116,7 +116,7 @@ class StateManager:
     def unload_state(
         self, state_name: str, force: bool = False, **kwargs
     ) -> type[State]:
-        """Loads the `State`s into the StateManager.
+        """Unloads the `State` from the StateManager.
 
         Parameters
         ----------
@@ -256,7 +256,7 @@ class StateManager:
         self.__current_state = self.__states[state_name]
 
     def update_state(self, **kwargs) -> None:
-        """Updates the changed State to take in place.
+        """Updates the changed State to take place.
 
         Parameters
         ----------

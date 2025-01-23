@@ -4,7 +4,7 @@ import random
 
 from pytmx.util_pygame import load_pygame
 
-from core import State
+from game_state import State
 from core.settings import (
     Display,
     BACKGROUND_COLOUR,
